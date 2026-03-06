@@ -5,6 +5,10 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import model.Card
 
 class GameViewModel : ViewModel() {
@@ -53,10 +57,50 @@ class GameViewModel : ViewModel() {
             SecondCardIndex = index
             moves++
 
-            checkMatch() //crear la funcion para ver si hacen match
+            checkMatch()
         }
     }
-    fun resetGame(){ //funcion para reiniciar juego
+
+    private fun checkMatch() {
+
+        val first = cards[firstCardIndex!!]
+        val second = cards[SecondCardIndex!!]
+
+        if (first.id == second.id) {
+
+            first.isMatched = true
+            second.isMatched = true
+
+            resetTurn()
+
+            if (cards.all { it.isMatched }) {
+                gameFinished = true
+            }
+
+        } else {
+
+            blockInput = true
+
+            CoroutineScope(Dispatchers.Main).launch {
+
+                delay(1000)
+
+                first.isFaceUp = false
+                second.isFaceUp = false
+
+                resetTurn()
+
+                blockInput = false
+            }
+        }
+    }
+
+    private fun resetTurn() {
+        firstCardIndex = null
+        SecondCardIndex = null
+    }
+
+    fun resetGame(){
         startGame()
     }
 }
