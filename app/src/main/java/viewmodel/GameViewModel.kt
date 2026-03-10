@@ -24,7 +24,6 @@ class GameViewModel : ViewModel() {
     var gameFinished by mutableStateOf(false)
         private set
 
-    // agregado para detectar derrota
     var gameOver by mutableStateOf(false)
         private set
 
