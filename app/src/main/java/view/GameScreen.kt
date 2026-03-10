@@ -95,7 +95,7 @@ fun GameScreen(viewModel: GameViewModel) {
 
         Spacer(modifier = Modifier.height(20.dp))
 
-        if (viewModel.gameFinished && viewModel.moves <= viewModel.maxMoves) {
+        if (viewModel.gameFinished && viewModel.moves < viewModel.maxMoves) {
             Text(
                 text = "🎉 You Win!",
                 fontSize = 28.sp,
