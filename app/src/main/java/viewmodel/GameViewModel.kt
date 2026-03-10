@@ -19,7 +19,7 @@ class GameViewModel : ViewModel() {
     var moves by mutableStateOf(0)
         private set
 
-    val maxMoves = 15
+    val maxMoves = 20
 
     var gameFinished by mutableStateOf(false)
         private set
