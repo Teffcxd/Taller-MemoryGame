@@ -24,6 +24,10 @@ class GameViewModel : ViewModel() {
     var gameFinished by mutableStateOf(false)
         private set
 
+    // agregado para detectar derrota
+    var gameOver by mutableStateOf(false)
+        private set
+
     private var firstCardIndex: Int? = null
     private var SecondCardIndex: Int? = null
     private var blockInput = false
@@ -45,15 +49,14 @@ class GameViewModel : ViewModel() {
 
         moves = 0
         gameFinished = false
+        gameOver = false
         firstCardIndex = null
         SecondCardIndex = null
-        blockInput = false
     }
 
     fun flipCard(index: Int) {
 
-        // 🔴 bloquear si terminó el juego o superó intentos
-        if (blockInput || gameFinished || moves >= maxMoves) return
+        if (blockInput) return
 
         val card = cards[index]
 
@@ -70,12 +73,12 @@ class GameViewModel : ViewModel() {
             SecondCardIndex = index
             moves++
 
-            checkMatch()
-
-            // 🔴 si llegó al límite y no ganó
+            // detectar si se acabaron los intentos
             if (moves >= maxMoves && !cards.all { it.isMatched }) {
-                gameFinished = true
+                gameOver = true
             }
+
+            checkMatch()
         }
     }
 
