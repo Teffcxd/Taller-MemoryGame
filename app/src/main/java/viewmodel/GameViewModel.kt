@@ -12,38 +12,48 @@ import kotlinx.coroutines.launch
 import model.Card
 
 class GameViewModel : ViewModel() {
+
     var cards = mutableStateListOf<Card>()
         private set
+
     var moves by mutableStateOf(0)
         private set
 
-    val maxMoves = 15// agregado
+    val maxMoves = 15
 
     var gameFinished by mutableStateOf(false)
         private set
+
     private var firstCardIndex: Int? = null
     private var SecondCardIndex: Int? = null
     private var blockInput = false
 
-    init{
+    init {
         startGame()
     }
-    fun startGame(){ // funcion para mezclar
+
+    fun startGame() {
+
         val numbers = (1..8).toList()
-        val shuffled = (numbers+numbers).shuffled()
+        val shuffled = (numbers + numbers).shuffled()
+
         cards.clear()
 
         shuffled.forEach {
             cards.add(Card(it))
         }
-        moves=0
-        gameFinished=false
-        firstCardIndex=null
-        SecondCardIndex=null
+
+        moves = 0
+        gameFinished = false
+        firstCardIndex = null
+        SecondCardIndex = null
+        blockInput = false
     }
+
     fun flipCard(index: Int) {
 
-        if (blockInput) return
+        // 🔴 bloquear si terminó el juego o superó intentos
+        if (blockInput || gameFinished || moves >= maxMoves) return
 
         val card = cards[index]
 
@@ -61,6 +71,11 @@ class GameViewModel : ViewModel() {
             moves++
 
             checkMatch()
+
+            // 🔴 si llegó al límite y no ganó
+            if (moves >= maxMoves && !cards.all { it.isMatched }) {
+                gameFinished = true
+            }
         }
     }
 
@@ -103,7 +118,7 @@ class GameViewModel : ViewModel() {
         SecondCardIndex = null
     }
 
-    fun resetGame(){
+    fun resetGame() {
         startGame()
     }
 }

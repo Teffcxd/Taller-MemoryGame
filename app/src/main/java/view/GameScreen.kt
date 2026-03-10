@@ -3,13 +3,15 @@ package view
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.grid.*
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import viewmodel.GameViewModel
@@ -18,82 +20,96 @@ import viewmodel.GameViewModel
 fun GameScreen(viewModel: GameViewModel) {
 
     val cards = viewModel.cards
-    val maxMoves = 15
-    val progress = viewModel.moves.toFloat() / maxMoves
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFF0F172A))
-            .padding(20.dp)
+            .background(Color(0xFF0B0F14))
+            .padding(20.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
         Spacer(modifier = Modifier.height(20.dp))
 
         Text(
             text = "Memory match",
-            fontSize = 32.sp,
-            fontWeight = FontWeight.Bold,
+            fontSize = 34.sp,
+            color = Color.White
+        )
+
+        Spacer(modifier = Modifier.height(10.dp))
+
+        Text(
+            text = "You have 15 attempts to match",
+            fontSize = 16.sp,
+            color = Color.LightGray
+        )
+
+        Spacer(modifier = Modifier.height(30.dp))
+
+        Text(
+            text = "Attempts",
+            color = Color.White
+        )
+
+        LinearProgressIndicator(
+            progress = viewModel.moves.toFloat() / viewModel.maxMoves,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(10.dp),
             color = Color.White
         )
 
         Spacer(modifier = Modifier.height(8.dp))
 
         Text(
-            text = "You have $maxMoves attempts to match all new flavours.",
-            color = Color.LightGray
-        )
-
-        Spacer(modifier = Modifier.height(20.dp))
-
-        Row(
-            horizontalArrangement = Arrangement.SpaceBetween,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-
-            Text(
-                text = "Attempts",
-                color = Color.White
-            )
-
-            Text(
-                text = "${viewModel.moves}/$maxMoves",
-                color = Color.White
-            )
-        }
-
-        Spacer(modifier = Modifier.height(6.dp))
-
-        LinearProgressIndicator(
-            progress = progress,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(8.dp),
-            color = Color(0xFF22C55E),
-            trackColor = Color.DarkGray
+            text = "${viewModel.moves}/${viewModel.maxMoves}",
+            color = Color.White,
+            fontSize = 18.sp
         )
 
         Spacer(modifier = Modifier.height(30.dp))
 
         LazyVerticalGrid(
             columns = GridCells.Fixed(4),
-            verticalArrangement = Arrangement.spacedBy(10.dp),
-            horizontalArrangement = Arrangement.spacedBy(10.dp)
+            modifier = Modifier.padding(8.dp)
         ) {
 
             itemsIndexed(cards) { index, card ->
 
                 CardItem(
                     value = card.id,
-                    isFaceUp = card.isFaceUp || card.isMatched
+                    isFaceUp = card.isFaceUp || card.isMatched,
+                    enabled = viewModel.moves < viewModel.maxMoves && !viewModel.gameFinished
                 ) {
                     viewModel.flipCard(index)
                 }
-
             }
-
         }
 
+        Spacer(modifier = Modifier.height(20.dp))
+
+        Button(onClick = { viewModel.resetGame() }) {
+            Text("Reset Game")
+        }
+
+        Spacer(modifier = Modifier.height(20.dp))
+
+        if (viewModel.gameFinished && viewModel.moves <= viewModel.maxMoves) {
+            Text(
+                text = "🎉 You Win!",
+                fontSize = 28.sp,
+                color = Color.Green
+            )
+        }
+
+        if (viewModel.moves >= viewModel.maxMoves && !viewModel.gameFinished) {
+            Text(
+                text = "❌ Game Over",
+                fontSize = 28.sp,
+                color = Color.Red
+            )
+        }
     }
 }
 
@@ -101,47 +117,52 @@ fun GameScreen(viewModel: GameViewModel) {
 fun CardItem(
     value: Int,
     isFaceUp: Boolean,
+    enabled: Boolean,
     onClick: () -> Unit
 ) {
 
-    val cardColor = when (value % 6) {
-        0 -> Color(0xFFEF4444)
-        1 -> Color(0xFFF97316)
-        2 -> Color(0xFFEAB308)
-        3 -> Color(0xFF22C55E)
-        4 -> Color(0xFF3B82F6)
-        else -> Color(0xFFEC4899)
+    val cardColor = when (value) {
+        1 -> Color(0xFFE74C3C) // rojo
+        2 -> Color(0xFF8E44AD) // morado
+        3 -> Color(0xFFF1C40F) // amarillo
+        4 -> Color(0xFF27AE60) // verde
+        5 -> Color(0xFFD35400) // naranja
+        6 -> Color(0xFF16A085) // verde oscuro
+        7 -> Color(0xFF2980B9) // azul
+        else -> Color(0xFFC0392B)
     }
 
-    Box(
+    Card(
         modifier = Modifier
+            .padding(8.dp)
             .size(70.dp)
-            .background(
-                color = if (isFaceUp) cardColor else Color.White,
-                shape = RoundedCornerShape(12.dp)
-            )
-            .clickable { onClick() },
-
-        contentAlignment = Alignment.Center
+            .clickable(enabled = enabled) { onClick() },
+        shape = RoundedCornerShape(12.dp)
     ) {
 
-        if (isFaceUp) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(
+                    if (isFaceUp) cardColor
+                    else Color.White
+                ),
+            contentAlignment = Alignment.Center
+        ) {
 
-            Text(
-                text = value.toString(),
-                color = Color.White,
-                fontWeight = FontWeight.Bold,
-                fontSize = 20.sp
-            )
-
-        } else {
-
-            Text(
-                text = "Ic",
-                color = Color.Black
-            )
-
+            if (isFaceUp) {
+                Text(
+                    text = value.toString(),
+                    fontSize = 22.sp,
+                    color = Color.White
+                )
+            } else {
+                Text(
+                    text = "Ic",
+                    fontSize = 20.sp,
+                    color = Color.Black
+                )
+            }
         }
-
     }
 }

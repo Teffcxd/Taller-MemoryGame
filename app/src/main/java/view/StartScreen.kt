@@ -7,9 +7,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
@@ -18,28 +16,18 @@ fun StartScreen(
     onStartClick: () -> Unit
 ) {
 
-    val gradient = Brush.verticalGradient(
-        colors = listOf(
-            Color(0xFF4CAF50),
-            Color(0xFF1B5E20)
-        )
-    )
-
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(gradient)
+            .background(Color(0xFFE1F5FE))
             .padding(20.dp),
-
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
         Text(
-            text = "MEMORY GAME",
-            fontSize = 40.sp,
-            fontWeight = FontWeight.Bold,
-            color = Color.White
+            text = "🧠 Memory Game",
+            fontSize = 40.sp
         )
 
         Spacer(modifier = Modifier.height(40.dp))
@@ -52,6 +40,5 @@ fun StartScreen(
                 fontSize = 20.sp
             )
         }
-
     }
 }
