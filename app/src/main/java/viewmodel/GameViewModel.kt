@@ -16,6 +16,9 @@ class GameViewModel : ViewModel() {
         private set
     var moves by mutableStateOf(0)
         private set
+
+    val maxMoves = 15// agregado
+
     var gameFinished by mutableStateOf(false)
         private set
     private var firstCardIndex: Int? = null
