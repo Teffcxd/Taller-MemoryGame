@@ -15,7 +15,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import viewmodel.GameViewModel
-
+val emojis = listOf("🐶","🐱","🐭","🐹", "🐰","🦊","🐻","🐼")
 @Composable
 fun GameScreen(viewModel: GameViewModel) {
 
@@ -40,7 +40,7 @@ fun GameScreen(viewModel: GameViewModel) {
         Spacer(modifier = Modifier.height(10.dp))
 
         Text(
-            text = "You have 15 attempts to match",
+            text = "You have 20 attempts to match",
             fontSize = 16.sp,
             color = Color.LightGray
         )
@@ -57,7 +57,7 @@ fun GameScreen(viewModel: GameViewModel) {
             modifier = Modifier
                 .fillMaxWidth()
                 .height(10.dp),
-            color = Color.White
+            color = Color.Blue
         )
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -152,13 +152,13 @@ fun CardItem(
 
             if (isFaceUp) {
                 Text(
-                    text = value.toString(),
+                    text = emojis[value-1],
                     fontSize = 22.sp,
                     color = Color.White
                 )
             } else {
                 Text(
-                    text = "Ic",
+                    text = "❓",
                     fontSize = 20.sp,
                     color = Color.Black
                 )
