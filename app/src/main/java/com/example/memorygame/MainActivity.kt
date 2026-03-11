@@ -25,7 +25,7 @@ class MainActivity : ComponentActivity() {
 
                 val gameViewModel: GameViewModel = viewModel()
 
-                var startGame = remember { mutableStateOf(false) }
+                val startGame = remember { mutableStateOf(false) }
 
                 if (startGame.value) {
 
