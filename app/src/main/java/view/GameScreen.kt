@@ -57,7 +57,7 @@ fun GameScreen(viewModel: GameViewModel) {
             modifier = Modifier
                 .fillMaxWidth()
                 .height(10.dp),
-            color = Color.White
+            color = Color.Blue
         )
 
         Spacer(modifier = Modifier.height(8.dp))
